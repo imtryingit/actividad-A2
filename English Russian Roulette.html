@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>English Russian Roulette</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Work+Sans:wght@400;600;700&display=swap">
+<style>
+:root{--felt:#08271a;--felt2:#0f3a27;--card:#efe6cc;--ink:#1b1b16;--gold:#e8bd4a;--red:#d62d2d;--ok:#2e8b57;--line:#c9a63c;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:dark}
+@media (prefers-color-scheme:light){:root:not([data-theme="dark"]){--felt:#1f6b45;--felt2:#2a8057;--card:#fffbee;color-scheme:light}}
+:root[data-theme="light"]{--felt:#1f6b45;--felt2:#2a8057;--card:#fffbee}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:radial-gradient(ellipse at 50% 0,var(--felt2),var(--felt) 70%) fixed;color:#fff;font-family:"Work Sans",system-ui,sans-serif;line-height:1.5}
+main{max-width:1100px;margin:0 auto;padding:16px}
+h1,h2,.slab{font-family:"Alfa Slab One",Georgia,serif;font-weight:400}
+h1{font-size:clamp(1.8rem,5vw,3.2rem);color:var(--gold);margin:8px 0;text-align:center;letter-spacing:.02em}
+.sub{text-align:center;max-width:70ch;margin:0 auto 16px;opacity:.9}
+.bar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:center;margin:10px 0}
+button,select{font:inherit;cursor:pointer}
+button:focus-visible,select:focus-visible,summary:focus-visible{outline:4px solid var(--gold);outline-offset:3px}
+.chip{border:2px solid var(--gold);background:transparent;color:#fff;border-radius:999px;padding:8px 18px;font-weight:600;min-height:44px}
+.chip[aria-pressed="true"]{background:var(--gold);color:var(--ink)}
+.btn{border:0;border-radius:12px;padding:12px 22px;font-weight:700;min-height:48px;background:var(--card);color:var(--ink)}
+.btn.ok{background:var(--ok);color:#fff}.btn.bad{background:var(--red);color:#fff}
+.btn.gold{background:var(--gold);color:var(--ink)}
+.btn[hidden]{display:none}
+.spin{font-family:"Alfa Slab One",Georgia,serif;font-size:clamp(1.6rem,4vw,2.6rem);background:var(--red);color:#fff;border:4px solid var(--gold);border-radius:999px;padding:12px 56px;min-height:72px;box-shadow:0 6px 0 #7d1414}
+.spin:active{transform:translateY(4px);box-shadow:0 2px 0 #7d1414}
+.player{display:flex;gap:16px;align-items:center;justify-content:center;flex-wrap:wrap}
+.hearts{font-size:2.4rem;letter-spacing:.15em;min-width:5ch;text-align:center}
+.stage{background:var(--card);color:var(--ink);border:6px double var(--line);border-radius:24px;padding:20px 20px 24px;margin:14px 0;text-align:center;min-height:360px;display:flex;flex-direction:column;justify-content:center;gap:14px}
+.cat{font-weight:700;font-size:1.2rem;color:#7a5a00}
+.q{font-family:"Alfa Slab One",Georgia,serif;font-size:clamp(2.2rem,6.2vw,5rem);line-height:1.15;margin:0;overflow-wrap:anywhere}
+.hint{font-size:clamp(1.1rem,2.4vw,1.6rem);margin:0;color:#4a4a3c}
+.clock{font-family:"Alfa Slab One",Georgia,serif;font-size:clamp(3.5rem,11vw,7rem);line-height:1;transition:color .2s}
+.clock.low{color:var(--red)}
+.track{height:18px;background:#0002;border-radius:9px;overflow:hidden}
+.fill{height:100%;width:100%;background:var(--ok);transform-origin:left}
+.fill.low{background:var(--red)}
+.ans{font-family:"Alfa Slab One",Georgia,serif;font-size:clamp(1.8rem,5vw,3.2rem);color:#0d5a34;margin:0}
+.ans small{display:block;font-family:"Work Sans",sans-serif;font-size:clamp(1rem,2.2vw,1.4rem);color:#4a4a3c;font-weight:600}
+.forfeit{background:var(--red);color:#fff;border-radius:16px;padding:12px 18px;font-weight:700;font-size:clamp(1.4rem,3.4vw,2.4rem)}
+.up{font-family:"Alfa Slab One",Georgia,serif;font-size:clamp(2rem,6vw,4rem);color:var(--red)}
+.up[hidden],.ans[hidden],.forfeit[hidden]{display:none}
+@media (prefers-reduced-motion:no-preference){.stage.pop{animation:pop .35s ease-out}@keyframes pop{from{transform:scale(.96);opacity:.6}to{transform:none;opacity:1}}}
+.lists{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:16px;margin-top:28px}
+.list{background:var(--card);color:var(--ink);border-radius:16px;padding:14px 18px;border-top:6px solid var(--gold)}
+.list h2{margin:0 0 6px;font-size:1.5rem}
+.list ol{margin:0;padding-left:1.6em}
+.list li{margin:5px 0}
+.list em{color:#0d5a34;font-style:normal;font-weight:700}
+.list .t{font-size:.85rem;opacity:.7}
+details.how{background:#0004;border-radius:12px;padding:8px 14px;max-width:760px;margin:0 auto}
+summary{cursor:pointer;font-weight:700;min-height:32px}
+.how ul{margin:6px 0 4px}
+label{font-weight:600}
+select{padding:8px 12px;border-radius:10px;border:2px solid var(--gold);background:var(--card);color:var(--ink);min-height:44px}
+</style>
+</head>
+<body>
+<main>
+<h1>English Russian Roulette</h1>
+<p class="sub">Juego en vivo para clase (nivel A2). Un estudiante a la vez: pulsa Spin, sale un reto y el estudiante responde antes de que acabe el tiempo.</p>
+<div class="bar" role="group" aria-label="Categoría">
+<button class="chip" data-c="all" aria-pressed="true">Todas</button>
+<button class="chip" data-c="voc" aria-pressed="false">Vocabulary</button>
+<button class="chip" data-c="flu" aria-pressed="false">Fluency</button>
+<button class="chip" data-c="gra" aria-pressed="false">Grammar</button>
+<button class="chip" data-c="wb" aria-pressed="false">Word Bomb</button>
+<label>Tiempo en Fluency <select id="fts"><option value="30">30 s</option><option value="45">45 s</option></select></label>
+</div>
+
+<section class="stage" id="stage" aria-live="polite">
+<div class="cat" id="cat">Listo para jugar</div>
+<p class="q" id="q">Pulsa Spin</p>
+<p class="hint" id="hint"></p>
+<div class="clock" id="clock">–</div>
+<div class="track" aria-hidden="true"><div class="fill" id="fill"></div></div>
+<div class="up" id="up" hidden>TIME’S UP!</div>
+<p class="ans" id="ans" hidden></p>
+<div class="forfeit" id="ff" hidden></div>
+</section>
+
+<div class="bar">
+<button class="btn spin" id="spin">Spin</button>
+<button class="btn gold" id="show" hidden>Mostrar respuesta</button>
+<button class="btn" id="forf">Forfeit</button>
+</div>
+
+<h2 style="text-align:center;color:var(--gold);margin-top:36px">Listas completas para el profesor</h2>
+<div class="lists" id="lists"></div>
+</main>
+<script>
+var N={voc:"Vocabulary",flu:"Fluency",gra:"Grammar",wb:"Word Bomb"};
+var D={
+voc:[["Name 3 hobbies"],["Name 3 things you can find in a supermarket"],["Name 3 clothes you wear in winter"],["Name 3 jobs"],["Name 3 places in a city"],["Name 3 things you take on a trip"],["Name 3 parts of the body"],["Name 3 things you eat for breakfast"],["Name 3 things you need when you are sick"],["Name 3 means of transport"],["Name 3 jobs where people wear a uniform"],["Name 3 things you can find in a suitcase"],
+["What does “tired” mean in Spanish?","cansado"],["What does “cheap” mean in Spanish?","barato"],["What does “early” mean in Spanish?","temprano"],["What does “wallet” mean in Spanish?","billetera / cartera"],["What does “neighbour” mean in Spanish?","vecino"],["What does “luggage” mean in Spanish?","equipaje"],["What does “fever” mean in Spanish?","fiebre"],["What does “knee” mean in Spanish?","rodilla"],["What does “sometimes” mean in Spanish?","a veces"],["What does “to wake up” mean in Spanish?","despertarse"]],
+flu:[["Tell me what you did last weekend.","Use the past simple"],["Describe your last holiday.","Where? Who with? What did you do?"],["What are you going to do next summer?","Use “going to”"],["Talk about your daily routine.","Use: always, usually, never"],["Compare two cities you know.","Use: bigger, more expensive, better"],["Tell me about your best friend.","Use: is, has, likes"],["What did you do yesterday evening?","Use the past simple"],["What are you going to do this weekend?","Use “going to”"],["Compare your house with a friend’s house.","Use: smaller, older, more comfortable"],["Describe your favourite day of the week.","What do you do? Why do you like it?"]],
+gra:[["Past simple: “Yesterday I ___ (go) to the park.”","went"],["Past simple: “Last night she ___ (watch) a film.”","watched"],["Comparative: “My brother is ___ than me.” (tall)","taller"],["Superlative: “Mount Everest is ___ mountain in the world.” (high)","the highest"],["Say a sentence with “going to” about tomorrow."],["Present continuous: “Look! The kids ___ in the garden.” (play)","are playing"],["Say 2 things you have to do today. (have to / must)"],["much or many? “How ___ water do you drink?” “How ___ friends have you got?”","much / many"],["Prepositions: “I wake up ___ 7 o’clock. The keys are ___ the table.”","at / on"],["Correct it: “I am agree with you.”","I agree with you."]],
+wb:[["prestar","lend"],["biblioteca","library","Falso amigo: librería = bookshop"],["padres","parents","Falso amigo: relatives = familiares"],["alfombra","carpet","Falso amigo: carpeta = folder"],["en realidad","actually","Falso amigo: actualmente = at the moment / nowadays"],["sensato","sensible","Falso amigo: sensible = sensitive"],["cena","dinner"],["calle","street"],["ventana","window"],["cumpleaños","birthday"],["enfermo","sick / ill"],["ropa","clothes"],["zapatos","shoes"],["lluvia","rain"],["llave","key"],["maleta","suitcase"],["olvidar","forget"],["ganar","win"],["viaje","trip"],["mañana (el día siguiente)","tomorrow"]]
+};
+var FF=["Spell your name letter by letter in English.","Count backwards from 20 to 1.","Act out an animal. The class guesses it in English.","Ask a classmate 3 questions in English.","Say the 12 months of the year.","Say 5 colours you can see in the classroom.","Say the alphabet from A to Z.","Say 3 nice things about your class."];
+function $(i){return document.getElementById(i)}
+var cat="all",timer=null,cur=null,used={};
+var secs={voc:10,gra:12,wb:7};
+function items(c){return D[c].map(function(x,i){return{c:c,i:i,q:x[0],a:x[1],h:x[2],tr:c==="wb"||(c==="voc"&&x.length>1)}})}
+function pick(arr,key){var u=used[key]||(used[key]=[]);var pool=arr.filter(function(x){return u.indexOf(x)<0});if(!pool.length){u.length=0;pool=arr}var r=pool[Math.floor(Math.random()*pool.length)];u.push(r);return r}
+function secsFor(it){if(it.c==="flu")return +$("fts").value;if(it.c==="voc")return it.tr?7:10;return secs[it.c]}
+function stop(){clearInterval(timer);timer=null}
+function reset(){$("up").hidden=true;$("ans").hidden=true;$("ff").hidden=true;$("clock").classList.remove("low");$("fill").classList.remove("low")}
+function run(total){stop();var t0=performance.now();$("clock").textContent=total;$("fill").style.transform="scaleX(1)";
+timer=setInterval(function(){var left=total-(performance.now()-t0)/1000;if(left<=0){stop();$("clock").textContent="0";$("fill").style.transform="scaleX(0)";$("up").hidden=false;return}
+$("clock").textContent=Math.ceil(left);$("fill").style.transform="scaleX("+left/total+")";var low=left<=3;$("clock").classList.toggle("low",low);$("fill").classList.toggle("low",low)},100)}
+function show(it){reset();cur=it;$("cat").textContent=N[it.c]+(it.c==="wb"?" · Say in English":"");
+$("q").textContent=it.c==="wb"?"Say in English: "+it.q:it.q;$("hint").textContent=(it.c==="flu"&&it.h)?it.h:"";
+$("show").hidden=!it.tr;var s=$("stage");s.classList.remove("pop");void s.offsetWidth;s.classList.add("pop");run(secsFor(it))}
+$("spin").onclick=function(){var pool=cat==="all"?["voc","flu","gra","wb"]:[cat];var c=pool[Math.floor(Math.random()*pool.length)];show(pick(items(c),c))};
+$("show").onclick=function(){if(!cur||!cur.tr)return;var a=$("ans");a.textContent=cur.a;if(cur.h){var s=document.createElement("small");s.textContent=cur.h;a.appendChild(s)}a.hidden=false};
+function forfeit(){stop();reset();$("cat").textContent="Forfeit";$("q").textContent="Your forfeit!";$("hint").textContent="";$("clock").textContent="😈";$("fill").style.transform="scaleX(0)";$("show").hidden=true;var f=$("ff");f.textContent=pick(FF,"ff");f.hidden=false}
+$("forf").onclick=forfeit;
+document.querySelectorAll(".chip").forEach(function(b){b.onclick=function(){cat=b.dataset.c;document.querySelectorAll(".chip").forEach(function(x){x.setAttribute("aria-pressed",x===b)})}});
+var L=$("lists");
+["voc","flu","gra","wb"].forEach(function(c){var d=document.createElement("section");d.className="list";var h=document.createElement("h2");h.textContent=N[c]+(c==="flu"?" (30–45 s)":c==="gra"?" (12 s)":c==="wb"?" (7 s)":" (10 s / 7 s)");d.appendChild(h);var ol=document.createElement("ol");
+items(c).forEach(function(it){var li=document.createElement("li");li.textContent=it.q;if(it.a){var e=document.createElement("em");e.textContent=" → "+it.a;li.appendChild(e)}if(it.h){var t=document.createElement("div");t.className="t";t.textContent=it.h;li.appendChild(t)}ol.appendChild(li)});d.appendChild(ol);L.appendChild(d)});
+var f=document.createElement("section");f.className="list";f.innerHTML="<h2>Forfeits</h2>";var fo=document.createElement("ol");FF.forEach(function(x){var li=document.createElement("li");li.textContent=x;fo.appendChild(li)});f.appendChild(fo);L.appendChild(f);
+</script>
+</body>
+</html>
